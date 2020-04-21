@@ -14,7 +14,7 @@
 //
 //
 ///**
-// * Unit test for Function class.
+// * Unit test for ReadFunction class.
 // */
 //public class FunctionTest {
 //    /**
@@ -45,7 +45,7 @@
 //        doReturn(Logger.getGlobal()).when(context).getLogger();
 //
 //        // Invoke
-//        final HttpResponseMessage ret = new Function().run(req, context);
+//        final HttpResponseMessage ret = new ReadFunction().run(req, context);
 //
 //        // Verify
 //        assertEquals(ret.getStatus(), HttpStatus.OK);

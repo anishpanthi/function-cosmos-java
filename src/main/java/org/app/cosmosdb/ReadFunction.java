@@ -1,13 +1,17 @@
 package org.app.cosmosdb;
 
-import java.util.*;
-import com.microsoft.azure.functions.annotation.*;
 import com.microsoft.azure.functions.*;
+import com.microsoft.azure.functions.annotation.AuthorizationLevel;
+import com.microsoft.azure.functions.annotation.CosmosDBInput;
+import com.microsoft.azure.functions.annotation.FunctionName;
+import com.microsoft.azure.functions.annotation.HttpTrigger;
+
+import java.util.Optional;
 
 /**
  * Azure Functions with HTTP Trigger.
  */
-public class Function {
+public class ReadFunction {
     /**
      * This function listens at endpoint "/api/findById". Two ways to invoke it using "curl" command in bash:
      * 1. curl -d "HTTP Body" {your host}/api/findById
@@ -17,7 +21,8 @@ public class Function {
     public HttpResponseMessage run(
             @HttpTrigger(name = "req",
                     methods = {HttpMethod.GET},
-                    authLevel = AuthorizationLevel.ANONYMOUS) HttpRequestMessage<Optional<String>> request,
+                    authLevel = AuthorizationLevel.ANONYMOUS)
+                    HttpRequestMessage<Optional<String>> request,
             @CosmosDBInput(name = "database",
                     databaseName = "my-cosmos-db",
                     collectionName = "cosmos-db",
@@ -45,39 +50,5 @@ public class Function {
                     .body(item.get())
                     .build();
         }
-    }
-
-    /**
-     * This function listens at endpoint "/api/save". Two ways to invoke it using "curl" command in bash:
-     * 1. curl -d "HTTP Body" {your host}/api/save&desc={description}
-     * 2. curl "{your host}/api/save?desc={description}"
-     */
-    @FunctionName("save")
-    public String storeToDatabase(
-            @HttpTrigger(name = "req",
-                    methods = {HttpMethod.GET, HttpMethod.POST},
-                    authLevel = AuthorizationLevel.ANONYMOUS) HttpRequestMessage<Optional<String>> request,
-            @CosmosDBOutput(name = "database",
-                    databaseName = "my-cosmos-db",
-                    collectionName = "cosmos-db",
-                    connectionStringSetting = "java_func_connectionString") final ExecutionContext context) {
-
-        // Item list
-        context.getLogger().info("Parameters are: " + request.getQueryParameters());
-
-        // Parse query parameter
-        String query = request.getQueryParameters().get("full_name");
-        String fullName = request.getBody().orElse(query);
-
-        // Generate random ID
-        final int id = Math.abs(new Random().nextInt());
-
-        // Generate document
-        final String jsonDocument = "{\"id\":\"" + id + "\", " +
-                "\"full_name\": \"" + fullName + "\"}";
-
-        context.getLogger().info("Document to be saved: " + jsonDocument);
-
-        return jsonDocument;
     }
 }
