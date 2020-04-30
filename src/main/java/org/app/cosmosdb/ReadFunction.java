@@ -9,6 +9,7 @@ import com.microsoft.azure.functions.annotation.HttpTrigger;
 import java.util.Optional;
 
 /**
+ * @author Anish
  * Azure Functions with HTTP Trigger.
  */
 public class ReadFunction {
